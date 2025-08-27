@@ -21,7 +21,7 @@ services:
     env_file:
       - .env
     volumes:
-      -./backend/prisma/dev.db:/app/prisma/dev.db
+      -sqlite_db:/app/prisma/dev.db
 
   nginx:
     build: ./infra/nginx/
@@ -38,3 +38,13 @@ services:
 networks:
   HyprPong_net:
     driver: bridge
+
+volumes:
+  sqlite_db:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./backend/prisma/dev.db
+      o: bind
+
+# i'm not eable to use bind mound according to the subject
