@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./frontend
+    image: frontend
+    container_name: frontend_container
+    networks:
+      - HyprPong_net
+    restart: always
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    image: backend
+    container_name: backend_container
+    networks:
+      - HyprPong_net
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      -./backend/prisma/dev.db:/app/prisma/dev.db
+
+  nginx:
+    build: ./infra/nginx/
+    image: nginx
+    container_name: nginx_container
+    networks:
+      - HyprPong_net
+    depends_on:
+      - frontend
+    ports:
+      -"443:443"
+
+
+networks:
+  HyprPong_net:
+    driver: bridge
